@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "console-log",
+    "description": "Log a message to the console",
+    "type": "object",
+    "required": [
+        "message"
+    ],
+    "properties": {
+        "message": {
+            "description": "Message to log to the console",
+            "type": "string",
+            "default": ""
+        }
+    }
+}

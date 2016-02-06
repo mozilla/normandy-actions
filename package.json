@@ -1,0 +1,32 @@
+{
+  "name": "normandy-actions",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Action implementations for the Normandy recipe server.",
+  "repository": "mozilla/normandy-actions",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/webpack --progress",
+    "upload": "./node_modules/.bin/babel-node ./bin/upload.js"
+  },
+  "config": {
+    "normandy_url": "https://normandy.mozilla.org",
+    "api_token": "",
+    "verify": true
+  },
+  "author": "Mozilla Foundation",
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "babel-cli": "^6.4.5",
+    "babel-core": "^6.4.0",
+    "babel-loader": "^6.2.1",
+    "babel-polyfill": "^6.3.14",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "babel-register": "^6.4.3",
+    "glob": "^6.0.4",
+    "node-fetch": "^1.3.3",
+    "webpack": "^1.12.11",
+    "yargs": "^3.32.0"
+  }
+}
