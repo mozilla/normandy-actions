@@ -50,7 +50,7 @@ let baseUrl = process.env.npm_package_config_normandy_url;
 let verify = process.env.npm_package_config_verify;
 let api = new NormandyApi(token, baseUrl, verify);
 for (let action of actions) {
-    api.getAction(action.name).then((action) => {
+    api.getAction(action.name).then(() => {
         api.updateAction(action.name, action).then(() =>{
             console.log(`Updated action ${action.name} successfully.`);
         }).catch((err) => {
