@@ -1,10 +1,11 @@
-import "babel-polyfill";
+import 'babel-polyfill';
 
-import {findActions, localPath} from './lib/utils';
+import {Action} from './lib/models';
+import {localPath} from './lib/utils';
 
 
 let entries = {};
-for (let action of findActions()) {
+for (let action of Action.localActions()) {
     entries[action.name] = action.entryPath;
 }
 
@@ -17,7 +18,7 @@ export default {
     },
     module: {
         loaders: [
-            { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
+            {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'}
         ]
     }
 };

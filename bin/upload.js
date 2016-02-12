@@ -1,15 +1,14 @@
 /**
  * Script to upload actions to the recipe server.
  */
-import "babel-polyfill";
+import 'babel-polyfill';
 
 import fs from 'fs';
 
 import {argv} from 'yargs';
-import fetch from 'node-fetch';
 
-import {Action, findActions, localPath} from '../lib/utils';
 import {NormandyApi} from '../lib/api';
+import {Action} from '../lib/models';
 
 
 // Validate action names if any were given.
@@ -24,7 +23,7 @@ if (argv._.length > 0) {
         }
     }
 } else {
-    actions = Array.from(findActions());
+    actions = Array.from(Action.localActions());
 }
 
 // Validate that the actions we want to upload have been built.
@@ -56,7 +55,7 @@ for (let action of actions) {
         }).catch((err) => {
             console.error(`Failed to update action ${action.name}: ${err}`);
         });
-    }).catch((err) => {
+    }).catch(() => {
         api.createAction(action).then(() => {
             console.log(`Create action ${action.name} successfully.`);
         }).catch((err) => {

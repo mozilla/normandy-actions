@@ -1,3 +1,4 @@
+/* global Normandy */
 import uuid from 'uuid';
 
 
