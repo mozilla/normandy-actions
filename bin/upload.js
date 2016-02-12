@@ -27,7 +27,7 @@ if (argv._.length > 0) {
 }
 
 // Validate that the actions we want to upload have been built.
-actions = actions.filter((action) => {
+actions = actions.filter(action => {
     try {
         fs.accessSync(action.buildPath, fs.R_OK);
         return true;
@@ -52,13 +52,13 @@ for (let action of actions) {
     api.getAction(action.name).then(() => {
         api.updateAction(action.name, action).then(() =>{
             console.log(`Updated action ${action.name} successfully.`);
-        }).catch((err) => {
+        }).catch(err => {
             console.error(`Failed to update action ${action.name}: ${err}`);
         });
     }).catch(() => {
         api.createAction(action).then(() => {
             console.log(`Create action ${action.name} successfully.`);
-        }).catch((err) => {
+        }).catch(err => {
             console.error(`Failed to create action ${action.name}: ${err}`);
         });
     });
