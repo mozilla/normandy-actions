@@ -1,5 +1,10 @@
-/* global Normandy */
+/* global registerAction */
+import {Action} from '../index.js';
 
-Normandy.registerAction('console-log', function(Normandy, args) {
-    console.log(args.message);
-});
+class ConsoleLogAction extends Action {
+    execute() {
+        console.log(this.recipe.args.message);
+    }
+}
+
+registerAction('console-log', ConsoleLogAction);
