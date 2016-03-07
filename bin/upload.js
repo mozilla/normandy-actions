@@ -9,6 +9,30 @@ import {argv} from 'yargs';
 
 import {NormandyApi} from '../lib/api';
 import {Action} from '../lib/models';
+import {localPath} from '../lib/utils';
+
+
+// Load config.json and figure out which environment we're using.
+let config = null;
+let config_env = argv.env || 'default';
+try {
+    config = JSON.parse(fs.readFileSync(localPath('config.json')));
+    if (!(config_env in config)) {
+        console.error(`No environment ${config_env} found in config.json.`);
+        process.exit();
+    } else {
+        config = config[config_env];
+    }
+} catch (err) {
+    if (err.code === 'ENOENT') {
+        console.error(
+            'No config.json file found (copy config.json-dist to config.json and fill it in).'
+        );
+    } else {
+        console.error(`Could not load config.json: ${err}`);
+    }
+    process.exit();
+}
 
 
 // Validate action names if any were given.
@@ -38,16 +62,15 @@ actions = actions.filter(action => {
 });
 
 // Validate that we have an API token.
-let token = process.env.npm_package_config_api_token;
-if (!token) {
-    console.error('No token specified, cannot upload actions without an API token.');
+if (!config.api_token) {
+    console.error(
+        `No token in ${config_env} config; cannot upload actions without an API token.`
+    );
     process.exit();
 }
 
 // Create the actions, or update them if they already exist on the server.
-let baseUrl = process.env.npm_package_config_normandy_url;
-let verify = process.env.npm_package_config_verify;
-let api = new NormandyApi(token, baseUrl, verify);
+let api = new NormandyApi(config.api_token, config.normandy_url, config.verify);
 for (let action of actions) {
     api.createOrUpdateAction(action)
         .then(() => {

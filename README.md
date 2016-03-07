@@ -27,25 +27,29 @@ Actions are built using [Webpack][] and can be written in [ES2015][] thanks to
 [Babel]: http://babeljs.io/
 
 ## Setup
-Before running the upload script, you must configure NPM with some credentials
-using the `npm config` command:
+Before running the upload script, you must create a configuration file with
+the URL you want to upload actions to and your access credentials. To do so,
+copy the `config.json-dist` file to `config.json` at the root of the repo:
 
 ```sh
-# Replace "name" with the property name and "value" with the value.
-npm config set normandy-actions:name value
+cp config.json-dist config.json
 ```
+
+`config.json` is split into multiple environments, that can be switched between
+using the `--env=envname` argument to the `upload` command. The `default`
+environment is used when no environment is specified. The keys to configure are:
 
 ### `api_token`
 Required. The API token for authenticate with the recipe server.
 
 ### `normandy_url`
-The base URL of the Normandy recipe server to upload actions to. Defaults to
-`https://normandy.mozilla.org`.
+The base URL of the Normandy recipe server to upload actions to. Example:
+`https://localhost:8000/api/v1`.
 
 ### `verify`
 Boolean setting as to whether the SSL certificate of the recipe server should be
-verified or not. Defaults to true, but should be set to false for local
-development.
+verified or not. Should be set to false for local development servers, and true
+otherwise.
 
 ## Scripts
 
@@ -64,6 +68,15 @@ command:
 ```sh
 npm run upload -- action-name other-action-name
 ```
+
+You can specify which environment config from the `config.json` file to use
+using the `--env` argument:
+
+```sh
+npm run upload -- --env=development action-name
+```
+
+If not environment is specified, the `default` one is used.
 
 ## License
 
