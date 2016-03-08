@@ -14,15 +14,9 @@ import {localPath} from '../lib/utils';
 
 // Load config.json and figure out which environment we're using.
 let config = null;
-let config_env = argv.env || 'default';
+let config_env = argv.env || 'local';
 try {
     config = JSON.parse(fs.readFileSync(localPath('config.json')));
-    if (!(config_env in config)) {
-        console.error(`No environment ${config_env} found in config.json.`);
-        process.exit();
-    } else {
-        config = config[config_env];
-    }
 } catch (err) {
     if (err.code === 'ENOENT') {
         console.error(
@@ -32,6 +26,13 @@ try {
         console.error(`Could not load config.json: ${err}`);
     }
     process.exit();
+}
+
+if (!(config_env in config)) {
+    console.error(`No environment ${config_env} found in config.json.`);
+    process.exit();
+} else {
+    config = config[config_env];
 }
 
 
