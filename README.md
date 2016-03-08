@@ -58,9 +58,8 @@ Runs Webpack to build the actions. Post-build artifacts can be found in the
 `build` directory, with one JS file per action.
 
 ### `npm run upload`
-Uploads actions to an instance of the recipe server. You must build actions
-before uploading them; the command uses the built code found in the `build`
-directory.
+Uploads actions to an instance of the recipe server. Actions are automatically
+built before uploading.
 
 You can specify which individual actions to upload by passing their names to the
 command:

@@ -6,7 +6,8 @@
   "repository": "mozilla/normandy-actions",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/webpack --progress",
+    "build": "./node_modules/.bin/webpack --progress --colors",
+    "watch": "./node_modules/./bin/webpack --progress --colors --watch",
     "upload": "./node_modules/.bin/babel-node ./bin/upload.js"
   },
   "author": "Mozilla Foundation",
