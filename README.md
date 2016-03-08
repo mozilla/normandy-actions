@@ -77,6 +77,12 @@ npm run upload -- --env=development action-name
 
 If not environment is specified, the `default` one is used.
 
+## `npm run watch`
+Watches the `actions` directory for changes and uploads actions when changes to
+their files are detected. This is mostly useful for local development where you
+want to quickly update a local Normandy instance. Accepts the same `--env`
+argument that `upload` does.
+
 ## License
 
 Normandy actions are licensed under the MPLv2. See the `LICENSE` file for

@@ -24,14 +24,6 @@ if (argv._.length > 0) {
     actions = Array.from(Action.localActions());
 }
 
-// Validate that we have an API token.
-if (!config.api_token) {
-    console.error(
-        `No token in ${config.env} config; cannot upload actions without an API token.`
-    );
-    process.exit();
-}
-
 // Create the actions, or update them if they already exist on the server.
 (async function() {
     /* eslint-disable babel/no-await-in-loop */
