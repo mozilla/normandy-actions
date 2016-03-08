@@ -27,7 +27,7 @@ if (argv._.length > 0) {
 }
 
 // Validate that the actions we want to upload have been built.
-actions = actions.filter((action) => {
+actions = actions.filter(action => {
     try {
         fs.accessSync(action.buildPath, fs.R_OK);
         return true;
@@ -53,7 +53,7 @@ for (let action of actions) {
         .then(() => {
             console.log(`Created/updated action ${action.name} successfully.`);
         })
-        .catch((err) => {
+        .catch(err => {
             console.error(`Failed to create/update action ${action.name}: ${err}`);
         });
 }
