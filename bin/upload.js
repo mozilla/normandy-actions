@@ -14,7 +14,6 @@ import {localPath} from '../lib/utils';
 
 // Load config.json and figure out which environment we're using.
 let config = null;
-let config_env = argv.env || 'local';
 try {
     config = JSON.parse(fs.readFileSync(localPath('config.json')));
 } catch (err) {
@@ -28,11 +27,12 @@ try {
     process.exit();
 }
 
-if (!(config_env in config)) {
-    console.error(`No environment ${config_env} found in config.json.`);
+let configEnv = argv.env || config.defaultEnv;
+if (!(configEnv in config.envs)) {
+    console.error(`No environment ${configEnv} found in config.json.`);
     process.exit();
 } else {
-    config = config[config_env];
+    config = config.envs[configEnv];
 }
 
 
@@ -65,7 +65,7 @@ actions = actions.filter(action => {
 // Validate that we have an API token.
 if (!config.api_token) {
     console.error(
-        `No token in ${config_env} config; cannot upload actions without an API token.`
+        `No token in ${configEnv} config; cannot upload actions without an API token.`
     );
     process.exit();
 }

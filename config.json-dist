@@ -1,12 +1,15 @@
 {
-    "local": {
-        "normandy_url": "https://localhost:8000/api/v1",
-        "api_token": "",
-        "verify": false
-    },
-    "development": {
-        "normandy_url": "https://normandy.dev.mozaws.net/api/v1",
-        "api_token": "",
-        "verify": true
+    "defaultEnv": "local",
+    "envs": {
+        "local": {
+            "normandy_url": "https://localhost:8000/api/v1",
+            "api_token": "",
+            "verify": false
+        },
+        "development": {
+            "normandy_url": "https://normandy.dev.mozaws.net/api/v1",
+            "api_token": "",
+            "verify": true
+        }
     }
 }
