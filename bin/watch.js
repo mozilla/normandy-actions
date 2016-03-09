@@ -1,5 +1,6 @@
 /**
- * Script to upload actions to the recipe server.
+ * Script to watch for changes to actions and upload them to the recipe
+ * server.
  */
 import 'babel-polyfill';
 
