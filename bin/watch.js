@@ -11,10 +11,10 @@ import {argv} from 'yargs';
 
 import {NormandyApi} from '../lib/api';
 import {Action} from '../lib/models';
-import {loadConfig, localPath} from '../lib/utils';
+import {loadEnvConfig, localPath} from '../lib/utils';
 
 
-let config = loadConfig(argv.env);
+let config = loadEnvConfig(argv.env);
 if (config === null) {
     process.exit();
 }
