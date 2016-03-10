@@ -36,8 +36,9 @@ cp config.json-dist config.json
 ```
 
 `config.json` is split into multiple environments, that can be switched between
-using the `--env=envname` argument to the `upload` command. The `default`
-environment is used when no environment is specified. The keys to configure are:
+using the `--env=envname` argument to several commands. The environment from the
+`defaultEnv` value in the config is used when no environment is specified. The
+keys to configure are:
 
 ### `api_token`
 Required. The API token for authenticate with the recipe server.
@@ -58,9 +59,8 @@ Runs Webpack to build the actions. Post-build artifacts can be found in the
 `build` directory, with one JS file per action.
 
 ### `npm run upload`
-Uploads actions to an instance of the recipe server. You must build actions
-before uploading them; the command uses the built code found in the `build`
-directory.
+Uploads actions to an instance of the recipe server. Actions are automatically
+built before uploading.
 
 You can specify which individual actions to upload by passing their names to the
 command:
@@ -77,6 +77,12 @@ npm run upload -- --env=development action-name
 ```
 
 If not environment is specified, the `default` one is used.
+
+### `npm run watch`
+Watches the `actions` directory for changes and uploads actions when changes to
+their files are detected. This is mostly useful for local development where you
+want to quickly update a local Normandy instance. Accepts the same `--env`
+argument that `upload` does.
 
 ## License
 
