@@ -84,6 +84,31 @@ their files are detected. This is mostly useful for local development where you
 want to quickly update a local Normandy instance. Accepts the same `--env`
 argument that `upload` does.
 
+## Tests
+Use the `npm test` command to run the test suite.
+
+## Documentation
+
+Documentation for the Driver API is stored in the `docs` directory and built
+using [Sphinx][]. You'll want to create a [virtualenv][] and install the
+requirements from the `docs/requirements.txt`:
+
+```sh
+pip install -r docs/requirements.txt
+```
+
+Then, build the documentation using `make`:
+
+```sh
+cd docs
+make html
+```
+
+The built documentation should be available at `docs/_build/html/index.html`.
+
+[Sphinx]: http://www.sphinx-doc.org/
+[virtualenv]: https://virtualenv.pypa.io/
+
 ## License
 
 Normandy actions are licensed under the MPLv2. See the `LICENSE` file for

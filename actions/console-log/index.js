@@ -1,9 +1,10 @@
-/* global registerAction */
-import {Action} from '../index.js';
+import 'babel-polyfill';
 
-class ConsoleLogAction extends Action {
-    execute() {
-        console.log(this.recipe.args.message);
+import {Action, registerAction} from '../utils';
+
+export default class ConsoleLogAction extends Action {
+    async execute() {
+        this.normandy.log(this.recipe.args.message, false);
     }
 }
 

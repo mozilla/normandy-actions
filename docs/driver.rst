@@ -23,6 +23,16 @@ The driver object contains the following attributes:
    Testing mode is mainly used when previewing recipes within the Normandy
    admin interface.
 
+.. js:function:: log(message, testOnly=true)
+
+   Log a message to an appropriate location. It's up to the driver where these
+   messages are stored; they could go to the browser console, or to a remote
+   logging service, or somewhere else. By default, messages are only logged in
+   testing mode.
+
+   :param message: Message to log
+   :param testOnly: If true, only log the message in testing mode. Default true.
+
 .. js:function:: showHeartbeat(options)
 
    Displays a Heartbeat survey to the user. Appears as a notification bar with

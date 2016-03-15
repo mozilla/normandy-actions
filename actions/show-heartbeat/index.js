@@ -1,5 +1,6 @@
-/* global registerAction */
-import {Action} from '../index.js';
+import 'babel-polyfill';
+
+import {Action, registerAction, weightedChoose} from '../utils';
 
 const VERSION = 52; // Increase when changed.
 const LAST_SHOWN_DELAY = 100 * 60 * 60 * 24 * 7; // 7 days
@@ -7,7 +8,6 @@ const LAST_SHOWN_DELAY = 100 * 60 * 60 * 24 * 7; // 7 days
 export default class ShowHeartbeatAction extends Action {
     constructor(normandy, recipe) {
         super(normandy, recipe);
-
         this.storage = normandy.createStorage(recipe.id);
     }
 
@@ -24,7 +24,7 @@ export default class ShowHeartbeatAction extends Action {
 
         // A bit redundant but the action argument names shouldn't necessarily rely
         // on the argument names showHeartbeat takes.
-        await this.Normandy.showHeartbeat({
+        await this.normandy.showHeartbeat({
             message: survey.message,
             thanksMessage: survey.thanksMessage,
             flowId: flowId,
@@ -34,7 +34,7 @@ export default class ShowHeartbeatAction extends Action {
         });
 
         this.setLastShownDate();
-        this.log('Heartbeat happened!');
+        this.normandy.log('Heartbeat happened!');
     }
 
     setLastShownDate() {
@@ -42,36 +42,32 @@ export default class ShowHeartbeatAction extends Action {
         this.storage.setItem('lastShown', Date.now());
     }
 
-
     async getLastShownDate() {
-        try {
-            let lastShown = await this.storage.getItem('lastShown');
-            return parseInt(lastShown, 10);
-        } catch (err) {
-            return null;
-        }
+        let lastShown = Number.parseInt(await this.storage.getItem('lastShown'), 10);
+        return Number.isNaN(lastShown) ? null : lastShown;
     }
 
     async annotatePostAnswerUrl(url) {
-        url = new URL(url);
-        let qp = url.queryParams;
-
         let appInfo = await this.normandy.getAppInfo();
-        qp.set('source', 'heartbeat');
-        qp.set('surveyversion', VERSION);
-        qp.set('updateChannel', appInfo.defaultUpdateChannel);
-        qp.set('fxVersion', appInfo.version);
+        let params = (
+            'source=heartbeat' +
+            '&surveyversion=' + VERSION +
+            '&updateChannel=' + appInfo.defaultUpdateChannel +
+            '&fxVersion=' + appInfo.version
+        );
 
-        return url.href;
+        if (url.indexOf('?') !== -1) {
+            url += '&' + params;
+        } else {
+            url += '?' + params;
+        }
+
+        return url;
     }
 
     /**
      * From the given list of surveys, choose one based on their relative
      * weights and return it.
-     *
-     * Weights define the probability a survey will be shown relative to other
-     * weighted surveys. If two surveys have weights 10 and 20, the second one will
-     * appear twice as often as the first.
      *
      * @param  {array}  surveys  Array of weighted surveys from the arguments
      *                           object.
@@ -80,23 +76,7 @@ export default class ShowHeartbeatAction extends Action {
      * @return {object}          The chosen survey, with the defaults applied.
      */
     chooseSurvey(surveys, defaults) {
-        // Rolling sums of weights; each weight is the survey's weight plus
-        // the weight of all previous surveys.
-        let weights = [surveys[0].weight];
-        for (let survey of surveys.slice(1)) {
-            weights.push(survey.weight + weights[weights.length - 1]);
-        }
-
-        let choice = Math.random() * weights[weights.length - 1];
-        let chosenSurvey = surveys[surveys.length];
-        for (let k = 0; k < weights.length - 1; k++) {
-            if (choice < weights[k]) {
-                chosenSurvey = surveys[k];
-                break;
-            }
-        }
-
-        let finalSurvey = Object.assign({}, chosenSurvey);
+        let finalSurvey = Object.assign({}, weightedChoose(surveys));
         for (let prop in finalSurvey) {
             if (!finalSurvey[prop]) {
                 finalSurvey[prop] = defaults[prop];
