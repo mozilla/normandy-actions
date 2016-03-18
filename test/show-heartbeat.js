@@ -51,7 +51,7 @@ describe('ShowHeartbeatAction', function() {
         expect(this.normandy.showHeartbeat).to.not.have.been.called;
     });
 
-    it('should show heartbeat if it hasn\'t shown within the past 7 days', async function() {
+    it("should show heartbeat if it hasn't shown within the past 7 days", async function() {
         let recipe = recipeFactory();
         let action = new ShowHeartbeatAction(this.normandy, recipe);
 

@@ -3,7 +3,7 @@ import 'babel-polyfill';
 import {Action, registerAction, weightedChoose} from '../utils';
 
 const VERSION = 52; // Increase when changed.
-const LAST_SHOWN_DELAY = 100 * 60 * 60 * 24 * 7; // 7 days
+const LAST_SHOWN_DELAY = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 export default class ShowHeartbeatAction extends Action {
     constructor(normandy, recipe) {
@@ -49,12 +49,13 @@ export default class ShowHeartbeatAction extends Action {
 
     async annotatePostAnswerUrl(url) {
         let appInfo = await this.normandy.getAppInfo();
-        let params = (
-            'source=heartbeat' +
-            '&surveyversion=' + VERSION +
-            '&updateChannel=' + appInfo.defaultUpdateChannel +
-            '&fxVersion=' + appInfo.version
-        );
+        let args = [
+            ['source', 'heartbeat'],
+            ['surveyversion', VERSION],
+            ['updateChannel', appInfo.defaultUpdateChannel],
+            ['fxVersion', appInfo.version],
+        ];
+        let params = args.map(([a, b]) => `${a}=${b}`).join('&');
 
         if (url.indexOf('?') !== -1) {
             url += '&' + params;
@@ -77,7 +78,7 @@ export default class ShowHeartbeatAction extends Action {
      */
     chooseSurvey(surveys, defaults) {
         let finalSurvey = Object.assign({}, weightedChoose(surveys));
-        for (let prop in finalSurvey) {
+        for (let prop in defaults) {
             if (!finalSurvey[prop]) {
                 finalSurvey[prop] = defaults[prop];
             }

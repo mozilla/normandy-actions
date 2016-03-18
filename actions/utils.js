@@ -18,23 +18,21 @@ export class Action {
  * @return {object}          The chosen choice.
  */
 export function weightedChoose(choices) {
-    // Rolling sums of weights; each weight is the choice's weight plus
-    // the weight of all previous choices.
-    let weights = [choices[0].weight];
-    for (let choice of choices.slice(1)) {
-        weights.push(choice.weight + weights[weights.length - 1]);
+    if (choices.length < 1) {
+        return null;
     }
 
-    let choice = Math.random() * weights[weights.length - 1];
-    let chosen = choices[choices.length - 1];
-    for (let k = 0; k < weights.length - 1; k++) {
-        if (choice < weights[k]) {
-            chosen = choices[k];
-            break;
+    let maxWeight = choices.map(c => c.weight).reduce((a, b) => a + b, 0);
+    let chosenWeight = Math.random() * maxWeight;
+    for (let choice of choices) {
+        chosenWeight -= choice.weight;
+        if (chosenWeight <= 0) {
+            return choice;
         }
     }
 
-    return chosen;
+    // We shouldn't hit this, but if we do, return the last choice.
+    return choices[choices.length - 1];
 }
 
 // Attempt to find the global registerAction, and fall back to a noop if it's
