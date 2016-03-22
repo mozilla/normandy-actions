@@ -20,7 +20,7 @@ function surveyFactory(props={}) {
 function recipeFactory(props={}) {
     return Object.assign({
         id: 1,
-        args: {
+        arguments: {
             defaults: {},
             surveys: [surveyFactory()],
         },
@@ -88,7 +88,7 @@ describe('ShowHeartbeatAction', function() {
     it('should annotate the post-answer URL with extra query args', async function() {
         let url = 'https://example.com';
         let recipe = recipeFactory();
-        recipe.args.surveys[0].postAnswerUrl = url;
+        recipe.arguments.surveys[0].postAnswerUrl = url;
         let action = new ShowHeartbeatAction(this.normandy, recipe);
 
         this.normandy.mock.appInfo = {
@@ -106,7 +106,7 @@ describe('ShowHeartbeatAction', function() {
     it('should annotate the post-answer URL if it has an existing query string', async function() {
         let url = 'https://example.com?foo=bar';
         let recipe = recipeFactory();
-        recipe.args.surveys[0].postAnswerUrl = url;
+        recipe.arguments.surveys[0].postAnswerUrl = url;
         let action = new ShowHeartbeatAction(this.normandy, recipe);
 
         this.normandy.mock.appInfo = {
@@ -136,7 +136,7 @@ describe('ShowHeartbeatAction', function() {
         let survey20 = surveyFactory({message: 'survey20', weight: 20});
         let survey30 = surveyFactory({message: 'survey30', weight: 30});
         let survey50 = surveyFactory({message: 'survey50', weight: 50});
-        let recipe = recipeFactory({args: {surveys: [survey20, survey30, survey50]}});
+        let recipe = recipeFactory({arguments: {surveys: [survey20, survey30, survey50]}});
 
         this.sinon.stub(Math, 'random')
             .onFirstCall().returns(0.1)

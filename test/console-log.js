@@ -10,7 +10,7 @@ describe('ConsoleLogAction', function() {
     });
 
     it('should log a message to the console', async function() {
-        let action = new ConsoleLogAction(this.normandy, {args: {message: 'test message'}});
+        let action = new ConsoleLogAction(this.normandy, {arguments: {message: 'test message'}});
         await action.execute();
         expect(this.normandy.log.calledWith('test message')).to.be.true;
     });

@@ -10,7 +10,7 @@ export default class ShowHeartbeatAction extends Action {
     }
 
     async execute() {
-        let {surveys, defaults} = this.recipe.args;
+        let {surveys, defaults} = this.recipe.arguments;
 
         let lastShown = await this.getLastShownDate();
         if (lastShown !== null && Date.now() - lastShown < LAST_SHOWN_DELAY) {
