@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 import {Action, registerAction} from '../utils';
 
 export default class ConsoleLogAction extends Action {

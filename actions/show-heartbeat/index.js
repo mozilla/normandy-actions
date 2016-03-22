@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 import {Action, registerAction, weightedChoose} from '../utils';
 
 const VERSION = 52; // Increase when changed.

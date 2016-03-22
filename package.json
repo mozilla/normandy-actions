@@ -5,7 +5,7 @@
   "description": "Action implementations for the Normandy recipe server.",
   "repository": "mozilla/normandy-actions",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --require babel-core/register",
+    "test": "./node_modules/.bin/mocha -r babel-core/register -r babel-polyfill",
     "build": "./node_modules/.bin/webpack --progress --colors",
     "watch": "./node_modules/.bin/babel-node ./bin/watch.js",
     "upload": "./node_modules/.bin/babel-node ./bin/upload.js"
