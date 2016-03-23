@@ -13,7 +13,12 @@ export default class ShowHeartbeatAction extends Action {
         let {surveys, defaults} = this.recipe.arguments;
 
         let lastShown = await this.getLastShownDate();
-        if (lastShown !== null && Date.now() - lastShown < LAST_SHOWN_DELAY) {
+        let shouldShowSurvey = (
+            this.normandy.testing
+            || lastShown === null
+            || Date.now() - lastShown > LAST_SHOWN_DELAY
+        );
+        if (!shouldShowSurvey) {
             return;
         }
 

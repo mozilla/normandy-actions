@@ -51,6 +51,18 @@ describe('ShowHeartbeatAction', function() {
         expect(this.normandy.showHeartbeat).to.not.have.been.called;
     });
 
+    it('should show heartbeat in testing mode regardless of when it was last shown', async function() {
+        let recipe = recipeFactory();
+        let action = new ShowHeartbeatAction(this.normandy, recipe);
+
+        this.normandy.testing = true;
+        this.normandy.mock.storage.data['lastShown'] = '100';
+        this.sinon.stub(Date, 'now').returns(10);
+
+        await action.execute();
+        expect(this.normandy.showHeartbeat).to.have.been.called;
+    });
+
     it("should show heartbeat if it hasn't shown within the past 7 days", async function() {
         let recipe = recipeFactory();
         let action = new ShowHeartbeatAction(this.normandy, recipe);
