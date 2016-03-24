@@ -1,5 +1,9 @@
-/* global Normandy */
+import {Action, registerAction} from '../utils';
 
-Normandy.registerAction('console-log', function(Normandy, args) {
-    console.log(args.message);
-});
+export default class ConsoleLogAction extends Action {
+    async execute() {
+        this.normandy.log(this.recipe.arguments.message, false);
+    }
+}
+
+registerAction('console-log', ConsoleLogAction);

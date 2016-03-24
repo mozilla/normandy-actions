@@ -15,13 +15,9 @@ if (config === null) {
     process.exit();
 }
 
-let actions = [];
+let actions = Array.from(Action.localActions());
 if (argv._.length > 0) {
-    for (let name of argv._) {
-        actions.push(new Action(name));
-    }
-} else {
-    actions = Array.from(Action.localActions());
+    actions = actions.filter(action => argv._.indexOf(action.name) !== -1);
 }
 
 // Create the actions, or update them if they already exist on the server.

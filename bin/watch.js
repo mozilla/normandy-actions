@@ -20,12 +20,28 @@ if (config === null) {
 }
 
 let api = new NormandyApi(config.api_token, config.normandy_url, config.verify);
-let watcher = chokidar.watch(localPath('actions'));
+let actionsDir = localPath('actions');
+let watcher = chokidar.watch(actionsDir);
 watcher.on('change', async function(changedPath) {
-    let actionName = path.relative(localPath('actions'), changedPath).split(path.sep)[0];
-    let action = new Action(actionName);
+    // Search upwards for a valid package.json file until we hit the actions
+    // directory.
+    let action = null;
+    let currentDir = path.dirname(changedPath);
+    while (currentDir !== actionsDir) {
+        try {
+            action = new Action(path.resolve(currentDir, 'package.json'));
+            if (action.isValid) {
+                break;
+            }
+        } catch (err) {
+            // Pass
+        }
 
-    if (action.isValid) {
+        action = null;
+        currentDir = path.dirname(currentDir);
+    }
+
+    if (action !== null) {
         process.stdout.write(`Uploading action ${action.name}...`);
         try {
             await action.build();
