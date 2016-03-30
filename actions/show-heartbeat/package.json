@@ -26,12 +26,17 @@
                     "minItems": 1,
                     "items": {
                         "$ref": "#/definitions/weightedSurvey",
-                        "headerTemplate": "Survey {{ i1 }}"
+                        "headerTemplate": "Survey {{ self.title }}"
                     }
                 }
             },
 
             "definitions": {
+                "title": {
+                    "description": "Descriptive title. Not shown to users",
+                    "type": "string",
+                    "default": ""
+                },
                 "message": {
                     "description": "Message to show to the user",
                     "type": "string",
@@ -60,6 +65,7 @@
                 "survey": {
                     "type": "object",
                     "properties": {
+                        "title": {"$ref": "#/definitions/title"},
                         "message": {"$ref": "#/definitions/message"},
                         "thanksMessage": {"$ref": "#/definitions/thanksMessage"},
                         "postAnswerUrl": {"$ref": "#/definitions/postAnswerUrl"},
@@ -74,6 +80,7 @@
                             "properties": {
                                 "weight": {
                                     "type": "integer",
+                                    "description": "Frequency relative to other surveys",
                                     "minimum": 1,
                                     "default": 1
                                 }
