@@ -12,13 +12,20 @@
 
             "type": "object",
             "required": [
+                "surveyId",
                 "surveys"
             ],
             "properties": {
+                "surveyId": {
+                    "type": "string",
+                    "description": "Slug uniquely identifying this survey in telemetry",
+                    "propertyOrder": 100
+                },
                 "defaults": {
                     "$ref": "#/definitions/survey",
                     "title": "Default values",
-                    "description": "Default values used for missing values in the list of surveys"
+                    "description": "Default values used for missing values in the list of surveys",
+                    "propertyOrder": 200
                 },
                 "surveys": {
                     "type": "array",
@@ -27,7 +34,8 @@
                     "items": {
                         "$ref": "#/definitions/weightedSurvey",
                         "headerTemplate": "Survey {{ self.title }}"
-                    }
+                    },
+                    "propertyOrder": 300
                 }
             },
 

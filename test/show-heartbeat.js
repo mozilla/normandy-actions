@@ -133,6 +133,25 @@ describe('ShowHeartbeatAction', function() {
         });
     });
 
+    it('should annotate the post-answer URL with a testing param in testing mode', async function() {
+        let url = 'https://example.com';
+        let recipe = recipeFactory();
+        recipe.arguments.surveys[0].postAnswerUrl = url;
+        let action = new ShowHeartbeatAction(this.normandy, recipe);
+
+        this.normandy.testing = true;
+        this.normandy.mock.appInfo = {
+            defaultUpdateChannel: 'nightly',
+            version: '42.0.1',
+        };
+
+        await action.execute();
+        expect(this.normandy.showHeartbeat).to.have.been.calledWithMatch({
+            postAnswerUrl: (url + '?source=heartbeat&surveyversion=52' +
+                            '&updateChannel=nightly&fxVersion=42.0.1&testing=1'),
+        });
+    });
+
     it('should set the last-shown date', async function() {
         let action = new ShowHeartbeatAction(this.normandy, recipeFactory());
 
