@@ -23,15 +23,20 @@ The driver object contains the following attributes:
    Testing mode is mainly used when previewing recipes within the Normandy
    admin interface.
 
-.. js:function:: log(message, testOnly=true)
+.. js:data:: locale
+
+   String containing the locale code of the user's preferred language.
+
+.. js:function:: log(message, level='debug')
 
    Log a message to an appropriate location. It's up to the driver where these
    messages are stored; they could go to the browser console, or to a remote
-   logging service, or somewhere else. By default, messages are only logged in
-   testing mode.
+   logging service, or somewhere else. If level is ``'debug'``, then messages
+   should only be logged if ``testing`` is true.
 
    :param message: Message to log
-   :param testOnly: If true, only log the message in testing mode. Default true.
+   :param level: Level to log message at, such as ``debug``, ``info``, or
+      ``error``. Defaults to ``debug``.
 
 .. js:function:: showHeartbeat(options)
 
@@ -48,30 +53,45 @@ The driver object contains the following attributes:
       the user won't be shown anything.
    :param learnMoreMessage: Text to show on the "Learn More" button.
    :param learnMoreUrl: URL to open when the "Learn More" button is clicked.
-   :returns: A Promise that resolves once the Heartbeat notification has been
-      shown, or rejects if Heartbeat is unavailable for some reason.
+   :param extraTelemetryArgs: Object containing extra arguments to send to
+      telemetry associated with this heartbeat call. Defaults to an empty
+      object.
+   :returns: A Promise that resolves with an event emitter.
 
-.. js:function:: getAppInfo()
+   The emitter returned by this function can be subscribed to using ``on``
+   method. For example:
 
-   Retrieves information about the client application:
+   .. code-block:: javascript
 
-   ``defaultUpdateChannel``
-      The update channel that Firefox is set to. Valid values include, but are
-      not limited to:
+      let heartbeat = await Normandy.showHeartbeat(options);
+      heartbeat.on('NotificationOffered', function(data) {
+         // Do something!
+      });
 
-      * ``'release'``
-      * ``'aurora'``
-      * ``'beta'``
-      * ``'nightly'``
-      * ``'default'`` (self-built or automated testing builds)
+   All events are given a data object with the following attributes:
 
-   ``defaultBrowser``
-      Boolean describing if Firefox is set as the default browser.
-   ``version``
-      String containing the Firefox version.
+   flowId
+      The ``flowId`` passed into ``showHeartbeat``.
+   timestamp
+      Timestamp (number of milliseconds since Unix epoch) of when the event
+      being emitted occurred.
 
-   :returns: A Promise that resolves with an object containing the application
-      info.
+   The events emitted by the emitter include:
+
+   NotificationOffered
+      Emitted after the notification bar is shown to the user.
+   NotificationClosed
+      Emittered after the notification bar closes, either by being closed
+      manually by the user, or automatically after voting.
+   LearnMore
+      Emitted when the user clicks the "Learn More" link.
+   Voted
+      Emitted when the user clicks the star rating bar and submits a rating.
+      An extra ``score`` attribute is included on the data object for this
+      event containing the rating the user submitted.
+   TelemetrySent
+      Emitted after Heartbeat has sent flow data to the Telemetry servers. Only
+      available on Firefox 46 and higher.
 
 .. js:function:: uuid()
 
@@ -86,6 +106,53 @@ The driver object contains the following attributes:
    :param keyPrefix: Prefix to append to keys before storing them, to avoid
       collision with other actions using the storage.
    :returns: :js:class:`Storage`
+
+.. js:function:: location()
+
+   Retrieves information about where the user is located.
+
+   :returns: A Promise that resolves with a location object.
+
+   The location object has the following fields:
+
+   countryCode
+      ISO 3166-1 country code for the country the user has been geolocated to.
+
+.. js:function:: saveHeartbeatFlow(data)
+
+   Sends flow data from Heartbeat to the Input server. See the
+   `Input documentation`_ for details about the data expected.
+
+   :param data: Object containing Heartbeat flow data.
+
+.. _Input Documentation: http://fjord.readthedocs.org/en/latest/hb_api.html
+
+.. js:function:: client()
+
+   Retrieves information about the user's browser.
+
+   :returns: Promise that resolves with a client data object.
+
+   The client data object includes the following fields:
+
+   version
+      String containing the Firefox version.
+   channel
+      String containing the update channel. Valid values include, but are not
+      limited to:
+
+      * ``'release'``
+      * ``'aurora'``
+      * ``'beta'``
+      * ``'nightly'``
+      * ``'default'`` (self-built or automated testing builds)
+
+   isDefaultBrowser
+      Boolean specifying whether Firefox is set as the user's default browser.
+   searchEngine
+      String containing the user's default search engine identifier.
+   syncSetup
+      Boolean containing whether the user has set up Firefox Sync.
 
 Storage
 -------
