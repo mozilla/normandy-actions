@@ -1,4 +1,4 @@
-import sinon from 'sinon';
+import EventEmitter from 'wolfy87-eventemitter';
 
 
 export class MockStorage {
@@ -24,18 +24,59 @@ export class MockStorage {
 
 
 export function mockNormandy() {
-    let mock = {
-        storage: new MockStorage(),
-        appInfo: {},
+    let normandy = {
+        mock: {
+            storage: new MockStorage(),
+            heartbeatEmitter: new EventEmitter(),
+            location: {
+                countryCode: 'us',
+            },
+            client: {
+                version: '41.0.1',
+                channel: 'release',
+                isDefaultBrowser: true,
+                searchEngine: 'google',
+                syncSetup: true,
+            },
+        },
+
+        testing: false,
+        locale: 'en-US',
+        location() {
+            return Promise.resolve(this.mock.location);
+        },
+        log() {
+            return;
+        },
+        createStorage() {
+            return this.mock.storage;
+        },
+        showHeartbeat() {
+            return Promise.resolve(this.mock.heartbeatEmitter);
+        },
+        client() {
+            return Promise.resolve(this.mock.client);
+        },
+        uuid() {
+            return 'fake-uuid';
+        },
+        saveHeartbeatFlow() {
+            return Promise.resolve();
+        },
     };
 
-    return {
-        mock: mock,
-        testing: false,
-        log: sinon.spy(),
-        createStorage: sinon.stub().returns(mock.storage),
-        showHeartbeat: sinon.stub().returns(Promise.resolve()),
-        getAppInfo: sinon.spy(() => mock.appInfo),
-        uuid: sinon.stub().returns('fake-uuid'),
-    };
+    let toSpy = [
+        'location',
+        'log',
+        'createStorage',
+        'showHeartbeat',
+        'client',
+        'uuid',
+        'saveHeartbeatFlow',
+    ];
+    for (let method of toSpy) {
+        spyOn(normandy, method).and.callThrough();
+    }
+
+    return normandy;
 }

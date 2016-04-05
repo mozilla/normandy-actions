@@ -1,5 +1,3 @@
-import {expect} from 'chai';
-
 import {mockNormandy} from './utils';
 import ConsoleLogAction from '../actions/console-log/index';
 
@@ -12,6 +10,6 @@ describe('ConsoleLogAction', function() {
     it('should log a message to the console', async function() {
         let action = new ConsoleLogAction(this.normandy, {arguments: {message: 'test message'}});
         await action.execute();
-        expect(this.normandy.log.calledWith('test message')).to.be.true;
+        expect(this.normandy.log).toHaveBeenCalledWith('test message', 'info');
     });
 });

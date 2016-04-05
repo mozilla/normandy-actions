@@ -84,8 +84,13 @@ their files are detected. This is mostly useful for local development where you
 want to quickly update a local Normandy instance. Accepts the same `--env`
 argument that `upload` does.
 
+### `npm run test-watch`
+Watches the `test` directory for changes and re-runs the tests automatically
+when changes are detected.
+
 ## Tests
-Use the `npm test` command to run the test suite.
+Use the `npm test` command to run the test suite. The tests require that you
+have Firefox installed.
 
 ## Documentation
 
