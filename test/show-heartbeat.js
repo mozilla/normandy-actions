@@ -4,6 +4,7 @@ import ShowHeartbeatAction from '../actions/show-heartbeat/index';
 
 function surveyFactory(props={}) {
     return Object.assign({
+        title: 'test survey',
         message: 'test message',
         thanksMessage: 'thanks!',
         postAnswerUrl: 'http://example.com',
@@ -18,6 +19,7 @@ function recipeFactory(props={}) {
     return Object.assign({
         id: 1,
         arguments: {
+            surveyId: 'mysurvey',
             defaults: {},
             surveys: [surveyFactory()],
         },
@@ -78,6 +80,24 @@ describe('ShowHeartbeatAction', function() {
 
         await action.execute();
         expect(this.normandy.showHeartbeat).toHaveBeenCalled();
+    });
+
+    it('should pass the correct arguments to showHeartbeat', async function() {
+        let showHeartbeatArgs = {
+            message: 'test message',
+            thanksMessage: 'thanks!',
+            learnMoreMessage: 'Learn More',
+            learnMoreUrl: 'http://example.com',
+        };
+        let recipe = recipeFactory(showHeartbeatArgs);
+        let action = new ShowHeartbeatAction(this.normandy, recipe);
+
+        this.normandy.uuid.and.returnValue('fake-uuid');
+
+        await action.execute();
+        expect(this.normandy.showHeartbeat).toHaveBeenCalledWith(
+            jasmine.objectContaining(showHeartbeatArgs)
+        );
     });
 
     it('should generate a UUID and pass it to showHeartbeat', async function() {
@@ -141,6 +161,37 @@ describe('ShowHeartbeatAction', function() {
         }));
     });
 
+    it('should pass some extra telemetry arguments to showHeartbeat', async function() {
+        let recipe = recipeFactory({revision_id: 42});
+        recipe.arguments.surveyId = 'my-survey';
+        let action = new ShowHeartbeatAction(this.normandy, recipe);
+
+        await action.execute();
+        expect(this.normandy.showHeartbeat).toHaveBeenCalledWith(jasmine.objectContaining({
+            extraTelemetryArgs: {
+                surveyId: 'my-survey',
+                surveyVersion: 42,
+            },
+        }));
+    });
+
+    it('should include a testing argument in extraTelemetryArgs when in testing mode', async function() {
+        let recipe = recipeFactory({revision_id: 42});
+        recipe.arguments.surveyId = 'my-survey';
+        let action = new ShowHeartbeatAction(this.normandy, recipe);
+
+        this.normandy.testing = true;
+
+        await action.execute();
+        expect(this.normandy.showHeartbeat).toHaveBeenCalledWith(jasmine.objectContaining({
+            extraTelemetryArgs: {
+                surveyId: 'my-survey',
+                surveyVersion: 42,
+                testing: 1,
+            },
+        }));
+    });
+
     it('should set the last-shown date', async function() {
         let action = new ShowHeartbeatAction(this.normandy, recipeFactory());
 
@@ -173,5 +224,47 @@ describe('ShowHeartbeatAction', function() {
         expect(this.normandy.showHeartbeat).toHaveBeenCalledWith(jasmine.objectContaining({
             message: survey30.message,
         }));
+    });
+
+    it('should save flow data via normandy.saveHeartbeatFlow', async function() {
+        let recipe = recipeFactory();
+        let survey = recipe.arguments.surveys[0];
+        let action = new ShowHeartbeatAction(this.normandy, recipe);
+
+        let client = this.normandy.mock.client;
+        spyOn(Date, 'now').and.returnValue(10);
+        this.normandy.testing = true;
+
+        await action.execute();
+
+        let emitter = this.normandy.mock.heartbeatEmitter;
+        emitter.emit('NotificationOffered', {timestamp: 20});
+        emitter.emit('LearnMore', {timestamp: 30});
+        emitter.emit('Voted', {timestamp: 40, score: 3});
+
+        // Checking per field makes recognizing which field failed
+        // _much_ easier.
+        let flowData = this.normandy.saveHeartbeatFlow.calls.mostRecent().args[0];
+        expect(flowData.response_version).toEqual(2);
+        expect(flowData.survey_id).toEqual(recipe.arguments.surveyId);
+        expect(flowData.question_id).toEqual(survey.message);
+        expect(flowData.updated_ts).toEqual(10);
+        expect(flowData.question_text).toEqual(survey.message);
+        expect(flowData.variation_id).toEqual(recipe.revision_id);
+        expect(flowData.score).toEqual(3);
+        expect(flowData.flow_began_ts).toEqual(10);
+        expect(flowData.flow_offered_ts).toEqual(20);
+        expect(flowData.flow_voted_ts).toEqual(40);
+        expect(flowData.channel).toEqual(client.channel);
+        expect(flowData.version).toEqual(client.version);
+        expect(flowData.locale).toEqual(this.normandy.locale);
+        expect(flowData.country).toEqual(this.normandy.mock.location.countryCode);
+        expect(flowData.is_test).toEqual(true);
+        expect(flowData.extra.engage).toEqual([
+            [10, survey.learnMoreUrl, 'notice'],
+        ]);
+        expect(flowData.extra.searchEngine).toEqual(client.searchEngine);
+        expect(flowData.extra.syncSetup).toEqual(client.syncSetup);
+        expect(flowData.extra.defaultBrowser).toEqual(client.isDefaultBrowser);
     });
 });

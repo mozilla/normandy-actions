@@ -108,7 +108,7 @@ export default class ShowHeartbeatAction extends Action {
             return;
         }
 
-        this.location = await this.normandy.location;
+        this.location = await this.normandy.location();
         this.client = await this.normandy.client();
         this.survey = this.chooseSurvey(surveys, defaults);
 
@@ -140,9 +140,8 @@ export default class ShowHeartbeatAction extends Action {
             flow.save();
         });
 
-        heartbeat.on('LearnMore', data => {
+        heartbeat.on('LearnMore', () => {
             flow.addLink(this.survey.learnMoreUrl, 'notice');
-            flow.setPhaseTimestamp('learnmore', data.timestamp);
             flow.save();
         });
 
