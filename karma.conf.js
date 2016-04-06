@@ -1,6 +1,6 @@
 // Karma configuration
 module.exports = function(config) {
-    config.set({
+    var karmaConfig = {
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
 
@@ -38,7 +38,7 @@ module.exports = function(config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['nyan'],
+        reporters: ['spec'],
 
         // web server port
         port: 9876,
@@ -64,5 +64,20 @@ module.exports = function(config) {
         // Concurrency level
         // how many browser should be started simultaneous
         concurrency: Infinity,
-    });
+    };
+
+    // Add JUnit reporting if we're running on CircleCI.
+    var reportDir = process.env.CIRCLE_TEST_REPORTS;
+    if (reportDir) {
+        karmaConfig.reporters.push('junit');
+        karmaConfig.junitReporter = {
+            // results will be saved as $outputDir/$browserName.xml
+            outputDir: reportDir,
+
+            // if included, results will be saved as $outputDir/$browserName/$outputFile
+            outputFile: 'normandy-actions.xml',
+        };
+    }
+
+    config.set(karmaConfig);
 };
