@@ -1,4 +1,5 @@
 import 'babel-polyfill';
+import webpack from 'webpack';
 
 import {Action} from './lib/models';
 import {localPath} from './lib/utils';
@@ -13,7 +14,11 @@ export default {
         }
         return entries;
     },
-
+    plugins: [
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}),
+    ],
     output: {
         path: localPath('build'),
         filename: '[name].js'
