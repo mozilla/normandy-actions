@@ -81,7 +81,7 @@ The driver object contains the following attributes:
    NotificationOffered
       Emitted after the notification bar is shown to the user.
    NotificationClosed
-      Emittered after the notification bar closes, either by being closed
+      Emitted after the notification bar closes, either by being closed
       manually by the user, or automatically after voting.
    LearnMore
       Emitted when the user clicks the "Learn More" link.

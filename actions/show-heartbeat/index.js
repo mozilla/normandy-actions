@@ -25,7 +25,7 @@ export class HeartbeatFlow {
             question_id: survey.message,
             updated_ts: Date.now(),
             question_text: survey.message,
-            variation_id: recipe.revision_id,
+            variation_id: recipe.revision_id.toString(),
 
             // Optional fields
             score: null,
