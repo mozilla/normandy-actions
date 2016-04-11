@@ -18,6 +18,7 @@ function surveyFactory(props={}) {
 function recipeFactory(props={}) {
     return Object.assign({
         id: 1,
+        revision_id: 1,
         arguments: {
             surveyId: 'mysurvey',
             defaults: {},
@@ -250,7 +251,7 @@ describe('ShowHeartbeatAction', function() {
         expect(flowData.question_id).toEqual(survey.message);
         expect(flowData.updated_ts).toEqual(10);
         expect(flowData.question_text).toEqual(survey.message);
-        expect(flowData.variation_id).toEqual(recipe.revision_id);
+        expect(flowData.variation_id).toEqual(recipe.revision_id.toString());
         expect(flowData.score).toEqual(3);
         expect(flowData.flow_began_ts).toEqual(10);
         expect(flowData.flow_offered_ts).toEqual(20);
