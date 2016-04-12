@@ -27,6 +27,8 @@ Actions are built using [Webpack][] and can be written in [ES2015][] thanks to
 [Babel]: http://babeljs.io/
 
 ## Setup
+Run `npm install` to install the dependencies.
+
 Before running the upload script, you must create a configuration file with
 the URL you want to upload actions to and your access credentials. To do so,
 copy the `config.json-dist` file to `config.json` at the root of the repo:
@@ -41,7 +43,10 @@ using the `--env=envname` argument to several commands. The environment from the
 keys to configure are:
 
 ### `api_token`
-Required. The API token for authenticate with the recipe server.
+Required. The API token for authenticate with the recipe server. You can
+[generate this key via the Normandy admin interface][api-key].
+
+[api-key]: http://normandy.readthedocs.org/en/latest/dev/workflow.html#generating-an-api-key
 
 ### `normandy_url`
 The base URL of the Normandy recipe server to upload actions to. Example:
