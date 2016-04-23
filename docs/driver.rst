@@ -153,6 +153,32 @@ The driver object contains the following attributes:
       String containing the user's default search engine identifier.
    syncSetup
       Boolean containing whether the user has set up Firefox Sync.
+   plugins
+      An object mapping of plugin names to :js:class:`Plugin` objects describing
+      the plugins installed on the client.
+
+Plugins
+-------
+.. js:class:: Plugin
+
+   A simple object describing a plugin installed on the client. This is **not**
+   the same object as returned by ``navigator.plugins``, but it is similar.
+
+   .. js:data:: name
+
+      The name of the plugin.
+
+   .. js:data:: description
+
+      A human-readable description of the plugin.
+
+   .. js:data:: filename
+
+      The filename of the plugin file.
+
+   .. js:data:: version
+
+      The plugin's version number string.
 
 Storage
 -------

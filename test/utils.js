@@ -23,6 +23,16 @@ export class MockStorage {
 }
 
 
+export function pluginFactory(props={}) {
+    return Object.assign({
+        name: 'Plugin',
+        description: 'A plugin',
+        filename: '/tmp/fake/path',
+        version: 'v1.0',
+    }, props);
+}
+
+
 export function mockNormandy() {
     let normandy = {
         mock: {
@@ -37,6 +47,7 @@ export function mockNormandy() {
                 isDefaultBrowser: true,
                 searchEngine: 'google',
                 syncSetup: true,
+                plugins: {},
             },
         },
 

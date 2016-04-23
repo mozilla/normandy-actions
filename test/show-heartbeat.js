@@ -1,4 +1,4 @@
-import {mockNormandy} from './utils';
+import {mockNormandy, pluginFactory} from './utils';
 import ShowHeartbeatAction from '../actions/show-heartbeat/index';
 
 
@@ -233,6 +233,16 @@ describe('ShowHeartbeatAction', function() {
         let action = new ShowHeartbeatAction(this.normandy, recipe);
 
         let client = this.normandy.mock.client;
+        client.plugins = {
+            'Shockwave Flash': pluginFactory({
+                name: 'Shockwave Flash',
+                version: '2.5.0',
+            }),
+            'otherplugin': pluginFactory({
+                name: 'otherplugin',
+                version: '7',
+            }),
+        };
         spyOn(Date, 'now').and.returnValue(10);
         this.normandy.testing = true;
 
@@ -261,6 +271,11 @@ describe('ShowHeartbeatAction', function() {
         expect(flowData.locale).toEqual(this.normandy.locale);
         expect(flowData.country).toEqual(this.normandy.mock.location.countryCode);
         expect(flowData.is_test).toEqual(true);
+        expect(flowData.extra.plugins).toEqual({
+            'Shockwave Flash': '2.5.0',
+            'otherplugin': '7',
+        });
+        expect(flowData.extra.flashVersion).toEqual(client.plugins['Shockwave Flash'].version);
         expect(flowData.extra.engage).toEqual([
             [10, survey.learnMoreUrl, 'notice'],
         ]);
