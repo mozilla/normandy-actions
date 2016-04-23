@@ -50,13 +50,18 @@
                     "type": "string",
                     "default": ""
                 },
+                "engagementButtonLabel": {
+                    "description": "Text for the engagement button. If specified, this button will be shown instead of rating stars.",
+                    "type": "string",
+                    "default": ""
+                },
                 "thanksMessage": {
                     "description": "Thanks message to show to the user after they've rated Firefox",
                     "type": "string",
                     "default": ""
                 },
                 "postAnswerUrl": {
-                    "description": "URL to redirect the user to after rating Firefox",
+                    "description": "URL to redirect the user to after rating Firefox or clicking the engagement button",
                     "type": "string",
                     "default": ""
                 },
@@ -73,12 +78,30 @@
                 "survey": {
                     "type": "object",
                     "properties": {
-                        "title": {"$ref": "#/definitions/title"},
-                        "message": {"$ref": "#/definitions/message"},
-                        "thanksMessage": {"$ref": "#/definitions/thanksMessage"},
-                        "postAnswerUrl": {"$ref": "#/definitions/postAnswerUrl"},
-                        "learnMoreMessage": {"$ref": "#/definitions/learnMoreMessage"},
-                        "learnMoreUrl": {"$ref": "#/definitions/learnMoreUrl"}
+                        "message": {
+                            "$ref": "#/definitions/message",
+                            "propertyOrder": 100
+                        },
+                        "engagementButtonLabel": {
+                            "$ref": "#/definitions/engagementButtonLabel",
+                            "propertyOrder": 200
+                        },
+                        "thanksMessage": {
+                            "$ref": "#/definitions/thanksMessage",
+                            "propertyOrder": 300
+                        },
+                        "postAnswerUrl": {
+                            "$ref": "#/definitions/postAnswerUrl",
+                            "propertyOrder": 400
+                        },
+                        "learnMoreMessage": {
+                            "$ref": "#/definitions/learnMoreMessage",
+                            "propertyOrder": 500
+                        },
+                        "learnMoreUrl": {
+                            "$ref": "#/definitions/learnMoreUrl",
+                            "propertyOrder": 600
+                        }
                     }
                 },
                 "weightedSurvey": {
@@ -86,11 +109,16 @@
                         {"$ref": "#/definitions/survey"},
                         {
                             "properties": {
+                                "title": {
+                                    "$ref": "#/definitions/title",
+                                    "propertyOrder": 50
+                                },
                                 "weight": {
                                     "type": "integer",
                                     "description": "Frequency relative to other surveys",
                                     "minimum": 1,
-                                    "default": 1
+                                    "default": 1,
+                                    "propertyOrder": 2000
                                 }
                             },
                             "required": ["weight"]
