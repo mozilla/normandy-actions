@@ -7,14 +7,15 @@ const LAST_SHOWN_DELAY = 1000 * 60 * 60 * 24 * 7; // 7 days
 export class HeartbeatFlow {
     constructor(action) {
         this.action = action;
+        let {normandy, recipe, survey, client, location} = action;
 
-        let flashPlugin = navigator.plugins['Shockwave Flash'];
+        let flashPlugin = client.plugins['Shockwave Flash'];
         let plugins = {};
-        for (let plugin of Array.from(navigator.plugins)) {
+        for (let pluginName in client.plugins) {
+            let plugin = client.plugins[pluginName];
             plugins[plugin.name] = plugin.version;
         }
 
-        let {normandy, recipe, survey, client, location} = action;
         this.data = {
             // Required fields
             response_version: 2,
