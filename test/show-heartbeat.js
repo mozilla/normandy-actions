@@ -6,6 +6,7 @@ function surveyFactory(props={}) {
     return Object.assign({
         title: 'test survey',
         message: 'test message',
+        engagementButtonLabel: '',
         thanksMessage: 'thanks!',
         postAnswerUrl: 'http://example.com',
         learnMoreMessage: 'Learn More',

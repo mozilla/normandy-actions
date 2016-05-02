@@ -128,6 +128,7 @@ export default class ShowHeartbeatAction extends Action {
         // on the argument names showHeartbeat takes.
         let heartbeat = await this.normandy.showHeartbeat({
             message: this.survey.message,
+            engagementButtonLabel: this.survey.engagementButtonLabel,
             thanksMessage: this.survey.thanksMessage,
             flowId: flow.id,
             postAnswerUrl: await this.annotatePostAnswerUrl(this.survey.postAnswerUrl),

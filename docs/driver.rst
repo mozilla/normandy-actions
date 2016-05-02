@@ -46,6 +46,8 @@ The driver object contains the following attributes:
    optionally a new tab is opened to a specific URL.
 
    :param message: Primary message to display alongside rating stars.
+   :param engagementButtonLabel: Message to display on the engagement button.
+      If specified, a button will be shown instead of the rating stars.
    :param thanksMessage: Message to show after user submits a rating.
    :param flowId: A UUID that should be unique to each call to this function.
       Used to track metrics related to this user interaction.
