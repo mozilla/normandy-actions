@@ -175,14 +175,12 @@ describe('ShowHeartbeatAction', function() {
 
         await action.execute();
         expect(this.normandy.showHeartbeat).toHaveBeenCalledWith(jasmine.objectContaining({
-            extraTelemetryArgs: {
-                surveyId: 'my-survey',
-                surveyVersion: 42,
-            },
+            surveyId: 'my-survey',
+            surveyVersion: 42,
         }));
     });
 
-    it('should include a testing argument in extraTelemetryArgs when in testing mode', async function() {
+    it('should include a testing argument when in testing mode', async function() {
         let recipe = recipeFactory({revision_id: 42});
         recipe.arguments.surveyId = 'my-survey';
         let action = new ShowHeartbeatAction(this.normandy, recipe);
@@ -191,11 +189,7 @@ describe('ShowHeartbeatAction', function() {
 
         await action.execute();
         expect(this.normandy.showHeartbeat).toHaveBeenCalledWith(jasmine.objectContaining({
-            extraTelemetryArgs: {
-                surveyId: 'my-survey',
-                surveyVersion: 42,
-                testing: 1,
-            },
+            testing: 1
         }));
     });
 
@@ -288,5 +282,31 @@ describe('ShowHeartbeatAction', function() {
         expect(flowData.extra.searchEngine).toEqual(client.searchEngine);
         expect(flowData.extra.syncSetup).toEqual(client.syncSetup);
         expect(flowData.extra.defaultBrowser).toEqual(client.isDefaultBrowser);
+    });
+
+    it('should truncate long values in flow data', async function() {
+        let longString = 'A 50 character string.............................';
+        let tooLongString = longString + 'XXXXXXXXXX';
+
+        let recipe = recipeFactory();
+        let action = new ShowHeartbeatAction(this.normandy, recipe);
+        let survey = recipe.arguments.surveys[0];
+
+        survey.message = tooLongString;
+        this.normandy.locale = tooLongString;
+        this.normandy.mock.client.channel = tooLongString;
+        this.normandy.mock.client.version = tooLongString;
+        this.normandy.mock.location.countryCode = tooLongString;
+
+        await action.execute();
+
+        // Checking per field makes recognizing which field failed
+        // _much_ easier.
+        let flowData = this.normandy.saveHeartbeatFlow.calls.mostRecent().args[0];
+        expect(flowData.question_id).toEqual(longString);
+        expect(flowData.locale).toEqual(longString);
+        expect(flowData.channel).toEqual(longString);
+        expect(flowData.version).toEqual(longString);
+        expect(flowData.country).toEqual('a 50');
     });
 });
