@@ -1,3 +1,7 @@
+> # This repository is now obsolete. Its contents are now a part of the [Normandy recipe server][normandy].
+
+[normandy]: https://github.com/mozilla/normandy
+
 # Normandy Actions
 This repository contains the implementations of actions used in the
 [Normandy recipe server][normandy].
